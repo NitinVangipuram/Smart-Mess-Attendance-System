@@ -1,0 +1,36 @@
+/* Navbar.css */
+
+.navbar {
+    background-color: #ffffff; /* Adjust background color as needed */
+    padding: 10px 20px; /* Add padding for better spacing */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
+}
+.navbar {
+    font-family: 'DM Sans', sans-serif;
+}
+
+.navbar-container {
+    display: flex;
+    align-items: center; /* Vertically center items */
+    justify-content: space-between; /* Space between logo and links */
+}
+
+.navbar-logo img {
+    width: 300px; /* Set the desired width */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.navbar-links {
+    display: flex;
+    gap: 20px; /* Space between links */
+}
+
+.navbar-item {
+    text-decoration: none; /* Remove underline from links */
+    color: #333; /* Change color as needed */
+    transition: color 0.3s; /* Smooth transition for hover effect */
+}
+
+.navbar-item:hover {
+    color: #007bff; /* Change color on hover */
+}
