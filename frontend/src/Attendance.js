@@ -33,13 +33,13 @@ const Attendance = () => {
         setIsSubmitting(true); // Set submitting state to true
 
         try {
-            const { data: student } = await axios.get(`http://localhost:5000/student/${rollNo}`);
+            const { data: student } = await axios.get(`http://localhost:8000/student/${rollNo}`);
             if (student.messtype !== messtype) {
                 Swal.fire('Error', 'Messtype does not match with the registered student', 'error');
                 return;
             }
 
-            await axios.post('http://localhost:5000/attendance', { rollNo, mealType: currentMealType, date });
+            await axios.post('http://localhost:8000/attendance', { rollNo, mealType: currentMealType, date });
             Swal.fire('Success', `Attendance for ${currentMealType} marked successfully`, 'success');
             setRollNo(''); // Clear roll number after marking attendance
         } catch (error) {

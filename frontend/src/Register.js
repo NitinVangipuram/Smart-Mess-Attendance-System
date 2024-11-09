@@ -16,7 +16,7 @@ const Register = () => {
         setIsSubmitting(true); // Set submitting state to true
 
         try {
-            await axios.post('http://localhost:5000/register', { rollNo, messtype });
+            await axios.post('http://localhost:8000/register', { rollNo, messtype });
             Swal.fire('Success', 'Student registered successfully', 'success');
             setRollNo(''); // Clear roll number after successful registration
         } catch (error) {
