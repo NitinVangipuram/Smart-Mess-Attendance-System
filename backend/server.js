@@ -30,6 +30,7 @@ const studentSchema = new mongoose.Schema({
     days: [daySchema]
 });
 
+
 const Student = mongoose.model('Student', studentSchema);
 
 // Register a student
