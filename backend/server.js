@@ -114,6 +114,10 @@ app.get('/student/:rollNo', async (req, res) => {
 app.post('/add-students', upload.single('file'), async (req, res) => {
     try {
         const file = req.file;
+        if (!file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+
         const workbook = xlsx.readFile(file.path);
         const sheet = workbook.Sheets[workbook.SheetNames[0]];
         const data = xlsx.utils.sheet_to_json(sheet);
@@ -121,11 +125,11 @@ app.post('/add-students', upload.single('file'), async (req, res) => {
         const students = data.map(row => ({
             rollNo: row.rollNo,
             messtype: row.messtype,
-            days: row.days ? JSON.parse(row.days) : []
+            days: row.days ? JSON.parse(row.days) : [],
         }));
 
         await Student.insertMany(students);
-        fs.unlinkSync(file.path); // Remove the file after processing
+        fs.unlinkSync(file.path);  // Remove the file after processing
 
         res.json({ message: 'Students added successfully' });
     } catch (error) {
@@ -143,37 +147,38 @@ if (!fs.existsSync(uploadsDir)) {
 
 app.get('/download-students', async (req, res) => {
     try {
+        // Fetch all students from the database
         const students = await Student.find().lean();
-        const workbook = xlsx.utils.book_new();
+
+        // Prepare data for the Excel sheet
         const worksheetData = students.map(student => ({
             rollNo: student.rollNo,
             messtype: student.messtype,
             days: JSON.stringify(student.days)
         }));
+
+        // Create a new workbook and add the worksheet
+        const workbook = xlsx.utils.book_new();
         const worksheet = xlsx.utils.json_to_sheet(worksheetData);
         xlsx.utils.book_append_sheet(workbook, worksheet, 'Students');
 
-        // Save the file in the 'uploads' folder
-        const filePath = path.join(uploadsDir, 'student.xlsx');
-        xlsx.writeFile(workbook, filePath);
+        // Generate the Excel file buffer
+        const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'buffer' });
 
-        console.log('File saved at:', filePath); // Log to confirm the file location
+        // Set headers for file download
+        res.setHeader('Content-Disposition', 'attachment; filename=students.xlsx');
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Length', excelBuffer.length); // Send the length of the file for browsers to expect the data
 
-        // Send the file for download without deleting
-        res.download(filePath, 'students.xlsx', (err) => {
-            if (err) {
-                console.error('Error during download:', err);
-                res.status(500).send({ message: 'Error downloading file', error: err });
-            } else {
-                console.log('File download initiated successfully.');
-            }
-        });
+        // Send the Excel buffer as the response
+        res.end(excelBuffer); // Using res.end to send the buffer directly
+
+        console.log('File download initiated successfully.');
     } catch (error) {
         console.error('Unexpected error:', error);
         res.status(500).json({ message: 'Error downloading students', error });
     }
 });
-
 
 // API: GET /api/students/:messtype - Get all students of a specific messtype
 app.get('/api/students/:messtype', async (req, res) => {
@@ -237,7 +242,8 @@ app.get('/api/student/:rollNo', async (req, res) => {
 // Get attendance summary
 app.get('/api/attendance/:messtype', async (req, res) => {
     try {
-        const students = await Student.find();
+        const { messtype } = req.params;
+        const students = await Student.find({messtype});
         const attendanceSummary = {};
 
         students.forEach(student => {

@@ -1,16 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from "./img/logo_black_final.png";
 import { Link } from 'react-router-dom';
-import './Navbar.css'; // Import your CSS file
+import './Navbar.css';
 
 const Navbar = () => {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
     return (
         <nav className="navbar">
             <div className="navbar-container">
-                <Link to="/register" className="navbar-logo"><img src={logo} alt="icon" /></Link>
-                <div className="navbar-links">
-                    <Link to="/register" className="navbar-item">Register</Link>
-                    <Link to="/attendance" className="navbar-item">Enter Student</Link>
+                <Link to="/" className="navbar-logo">
+                    <img src={logo} alt="icon" />
+                </Link>
+                <button className="menu-icon" onClick={toggleMobileMenu}>
+                    {/* Hamburger Icon */}
+                    <span className="menu-icon-bar"></span>
+                    <span className="menu-icon-bar"></span>
+                    <span className="menu-icon-bar"></span>
+                </button>
+                <div className={`navbar-links ${isMobileMenuOpen ? "navbar-links-active" : ""}`} style={{alignItems:"center" , zIndex:"2"}}>
+                    <Link to="/" className="navbar-item" onClick={toggleMobileMenu}>Register</Link>
+                    <Link to="/attendance" className="navbar-item" onClick={toggleMobileMenu}>Enter Student</Link>
+                    <Link to="/analytics" className="navbar-item" onClick={toggleMobileMenu}>Analytics</Link>
+                    <Link to="/impexp" className="navbar-item" onClick={toggleMobileMenu}>Import/Export</Link>
+                    
                 </div>
             </div>
         </nav>
