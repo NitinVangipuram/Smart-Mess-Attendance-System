@@ -1,0 +1,94 @@
+/* LoadingScreen.css */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    overflow: hidden; /* Prevent content from overflowing */
+    opacity: 1;
+    transition: opacity 1s ease-out; /* Smooth fade-out when it disappears */
+}
+
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+    justify-content: center; /* Center content vertically */
+    width: 600px; /* Ensures content width is consistent */
+    text-align: center; /* Ensures text is centered */
+}
+
+/* Slide-in and Slide-out animation */
+.loading-screen .slide-in {
+    opacity: 1;
+    animation: slideIn 1s ease-out forwards; /* Smooth slide-in */
+}
+
+.loading-screen .slide-out {
+    animation: slideOut 1s ease-in forwards; /* Smooth slide-out */
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateX(-100%); /* Start from the left */
+    }
+    100% {
+        transform: translateX(0); /* End at the center */
+    }
+}
+
+@keyframes slideOut {
+    0% {
+        transform: translateY(0); /* Start at center */
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100%); /* Move down */
+        opacity: 0;
+    }
+}
+
+/* Styling for logo */
+.logo {
+    width: 100%; /* Ensures the logo doesn't overflow */
+    margin-bottom: 10px; /* Reduced margin between logo and text */
+}
+
+/* Styling for loading text */
+.loading-text {
+    font-size: 2.5rem; /* Larger font size */
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 20px; /* Increased margin between text and loading bar */
+    animation: textAppear 1s ease-out; /* Smooth appearance of text */
+    text-wrap: nowrap;
+}
+
+/* Smooth text appearance */
+@keyframes textAppear {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Optional: To handle smaller screens */
+@media (max-width: 768px) {
+    .logo {
+        width: 80%; /* Adjust logo size for smaller screens */
+    }
+
+    .loading-text {
+        font-size: 2rem; /* Adjust text size for smaller screens */
+    }
+}

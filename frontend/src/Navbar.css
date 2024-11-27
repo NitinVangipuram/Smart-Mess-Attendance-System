@@ -1,36 +1,82 @@
-/* Navbar.css */
-
-.navbar {
-    background-color: #ffffff; /* Adjust background color as needed */
-    padding: 10px 20px; /* Add padding for better spacing */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
+/* Navbar Base Styles */
+body{
+    margin: 0;
+    padding: 0;
+    background-color: "#EFF5FF";
 }
 .navbar {
+    background-color: #ffffff;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     font-family: 'DM Sans', sans-serif;
 }
 
 .navbar-container {
     display: flex;
-    align-items: center; /* Vertically center items */
-    justify-content: space-between; /* Space between logo and links */
+    align-items: center;
+    justify-content: space-between;
 }
 
 .navbar-logo img {
-    width: 300px; /* Set the desired width */
-    height: auto; /* Maintain aspect ratio */
+    width: 300px;
+    height: auto;
 }
 
 .navbar-links {
     display: flex;
-    gap: 20px; /* Space between links */
+    gap: 20px;
 }
 
 .navbar-item {
-    text-decoration: none; /* Remove underline from links */
-    color: #333; /* Change color as needed */
-    transition: color 0.3s; /* Smooth transition for hover effect */
+    text-decoration: none;
+    color: #333;
+    transition: color 0.3s;
 }
 
 .navbar-item:hover {
-    color: #007bff; /* Change color on hover */
+    color: #007bff;
+}
+
+/* Hamburger Menu Icon */
+.menu-icon {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
+}
+
+.menu-icon-bar {
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    transition: all 0.3s;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .navbar-links {
+        display: none;
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+        position: absolute;
+        top: 85px;
+        right: 0;
+        z-index: 1;
+        background-color: white;
+        width: 100%;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-links.navbar-links-active {
+        display: flex;
+    }
+
+    .menu-icon {
+        display: flex;
+    }
 }

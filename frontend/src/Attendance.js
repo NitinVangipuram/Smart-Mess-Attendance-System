@@ -1,6 +1,5 @@
-// Attendance.js
-import React, { useState } from 'react';
-import { TextField, Button, Typography, Box, Container, Alert } from '@mui/material';
+import React, { useState, useEffect, useRef } from 'react';
+import { TextField, Button, Typography, Box, Container, Alert ,ButtonGroup} from '@mui/material';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2';
@@ -10,16 +9,33 @@ const Attendance = () => {
     const [messtype, setMesstype] = useState('floor1');
     const date = dayjs().format('YYYY-MM-DD');
     const [isSubmitting, setIsSubmitting] = useState(false); // Track submission state
+    const rollNoRef = useRef(null); // Reference for Roll No input
+
+    useEffect(() => {
+        rollNoRef.current.focus(); // Set focus to Roll No input when the component loads
+
+        // Prevent focus loss by stopping the blur event when clicking outside
+        const preventBlur = (event) => {
+            if (!rollNoRef.current.contains(event.target)) {
+                event.preventDefault(); // Prevent blur when clicking outside
+            }
+        };
+
+        document.addEventListener('mousedown', preventBlur); // Listen for click outside
+        return () => {
+            document.removeEventListener('mousedown', preventBlur); // Cleanup on unmount
+        };
+    }, []);
 
     const getCurrentMealType = () => {
         const currentHour = dayjs().hour();
         if (currentHour >= 7 && currentHour < 10) return 'breakfast';
         if (currentHour >= 12 && currentHour < 14) return 'lunch';
         if (currentHour >= 14 && currentHour < 18) return 'snacks';
-        if (currentHour >= 19 && currentHour < 21) return 'dinner';
+        if (currentHour >= 19 && currentHour < 24) return 'dinner';
         return ''; // No meal type currently available
     };
-    
+
     const currentMealType = getCurrentMealType();
 
     const markAttendance = async () => {
@@ -34,16 +50,37 @@ const Attendance = () => {
 
         try {
             const { data: student } = await axios.get(`http://localhost:8000/student/${rollNo}`);
+
             if (student.messtype !== messtype) {
-                Swal.fire('Error', 'Messtype does not match with the registered student', 'error');
+                Swal.fire({
+                    title: 'Warning',
+                    text: `Messtype does not match with the registered student. Expected: ${messtype}, Found: ${student.messtype}`,
+                    icon: 'warning',
+                    color: '#000', // black text color for better contrast
+                });
+                setRollNo('');
                 return;
             }
 
-            await axios.post('http://localhost:8000/attendance', { rollNo, mealType: currentMealType, date });
-            Swal.fire('Success', `Attendance for ${currentMealType} marked successfully`, 'success');
-            setRollNo(''); // Clear roll number after marking attendance
+            const response = await axios.post(`http://localhost:8000/attendance/${messtype}`, {
+                rollNo,
+                mealType: currentMealType,
+                date
+            });
+
+            if (response.status === 200) {
+                Swal.fire('Success', `Attendance for ${currentMealType} marked successfully`, 'success');
+                setRollNo(''); // Clear roll number after marking attendance
+                rollNoRef.current.focus(); // Re-focus on Roll No input
+            }
         } catch (error) {
-            Swal.fire('Error', 'Error marking attendance or student not found', 'error');
+            if (error.response) {
+                Swal.fire('Error', error.response.data || 'Error marking attendance', 'error');
+                setRollNo('');
+            } else {
+                Swal.fire('Error', 'Network error or unexpected issue', 'error');
+                
+            }
         } finally {
             setIsSubmitting(false); // Reset submitting state
         }
@@ -56,49 +93,85 @@ const Attendance = () => {
         }
     };
 
-    return (
-        <Container>
-            <Box marginTop="20px">
-                <Typography variant="h5">Mark Student</Typography>
-                
-                {/* Display the current date */}
-                <Typography variant="h6" sx={{ mt: 2 }}>
-                    Date: {dayjs().format('MMMM D, YYYY')}
-                </Typography>
+    const handleFloorChange = (newFloor) => {
+        setMesstype(newFloor);
+        rollNoRef.current.focus(); // Re-focus the Roll No input field after changing the floor
+    };
 
-                <Box display="flex" justifyContent="space-around" mb={2}>
-                    <Button
-                        variant={messtype === 'floor1' ? 'contained' : 'outlined'}
-                        color="primary"
-                        onClick={() => setMesstype('floor1')}
-                        sx={{ borderRadius: '6px' }}
-                    >
-                        Floor 1
-                    </Button>
-                    <Button
-                        variant={messtype === 'floor2' ? 'contained' : 'outlined'}
-                        color="primary"
-                        onClick={() => setMesstype('floor2')}
-                        sx={{ borderRadius: '6px' }}
-                    >
-                        Floor 2
-                    </Button>
-                </Box>
+    return (
+        <div style={{background:"#EFF5FF" , minHeight:"100vh"}}>
+        <Container style={{paddingTop:"40px"}}>
+        <Box>
+                <Alert
+                    severity={currentMealType ? 'success' : 'error'}
+                    sx={{ mb: 2 }}
+                    style={{ paddingTop: "20px", paddingBottom: "20px", fontSize: "18px",border:"1px solid" }}
+                >
+                    Current Meal: {currentMealType ? currentMealType.charAt(0).toUpperCase() + currentMealType.slice(1) : "No meal available"}
+                </Alert>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "15px" }}>
+                    <Typography variant="h5">Mark Student</Typography>
+                    <Typography variant="h6">
+                        Date: {dayjs().format('MMMM D, YYYY')}
+                    </Typography>
+                </div>
+                <Box display="flex" justifyContent="center" mb={4} mt ={4}>
+            <ButtonGroup
+                sx={{
+                    borderRadius: '30px',
+                    overflow: 'hidden',
+                    width:"100%",
+                    
+                }}
+            >
+                <Button
+                    variant={messtype === 'floor1' ? 'contained' : 'outlined'}
+                    color="primary"
+                    onClick={() => handleFloorChange('floor1')}
+                    sx={{
+                        borderRadius: '30px',
+                        width:"100%",
+                        textTransform: 'none',
+                        padding: '10px 30px',
+                        color: messtype === 'floor1' ? 'white' : 'primary.main',
+                        backgroundColor: messtype === 'floor1' ? 'primary.main' : 'white',
+                        transition: 'background-color 0.3s ease, color 0.3s ease',
+                        '&:hover': {
+                            backgroundColor: messtype === 'floor1' ? 'primary.dark' : 'rgba(0, 0, 0, 0.04)',
+                        },
+                    }}
+                >
+                    Floor 1
+                </Button>
+                <Button
+                    variant={messtype === 'floor2' ? 'contained' : 'outlined'}
+                    color="primary"
+                    onClick={() => handleFloorChange('floor2')}
+                    sx={{
+                        borderRadius: '30px',
+                        textTransform: 'none',
+                        width:"100%",
+                        padding: '10px 30px',
+                        color: messtype === 'floor2' ? 'white' : 'primary.main',
+                        backgroundColor: messtype === 'floor2' ? 'primary.main' : 'white',
+                        transition: 'background-color 0.3s ease, color 0.3s ease',
+                        '&:hover': {
+                            backgroundColor: messtype === 'floor2' ? 'primary.dark' : 'rgba(0, 0, 0, 0.04)',
+                        },
+                    }}
+                >
+                    Floor 2
+                </Button>
+            </ButtonGroup>
+        </Box>
                 <TextField
                     label="Roll No"
                     fullWidth
                     value={rollNo}
                     onChange={(e) => setRollNo(e.target.value)}
                     onKeyDown={handleKeyDown} // Add key down listener
+                    inputRef={rollNoRef} // Set ref to Roll No input
                 />
-
-                {/* Display the current meal type with alert coloring */}
-                <Alert 
-                    severity={currentMealType ? 'success' : 'error'} 
-                    sx={{ mt: 2 }}
-                >
-                    Current Meal: {currentMealType ? currentMealType.charAt(0).toUpperCase() + currentMealType.slice(1) : "No meal available"}
-                </Alert>
 
                 <Button
                     variant="contained"
@@ -111,6 +184,7 @@ const Attendance = () => {
                 </Button>
             </Box>
         </Container>
+        </div>
     );
 };
 

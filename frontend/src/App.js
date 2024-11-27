@@ -1,19 +1,38 @@
-import React from 'react';
+// App.js
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './Navbar'; // Import your Navbar component
-import Register from './Register'; // Create Register component
-import './App.css'; // Import your CSS file
-import Attendance from './Attendance'; // Create Attendance component
+import Navbar from './Navbar';
+import Register from './Register';
+import Attendance from './Attendance';
+import Analytics from './Analytics';
+import Impexp from './Impexp';
+// import LoadingScreen from './LoadingScreen';
+import './App.css';
 
 function App() {
+    // const [isLoading, setIsLoading] = useState(true);
+
+    // useEffect(() => {
+    //     const timer = setTimeout(() => setIsLoading(false), 3500); // Adjust time as needed for loading screen
+    //     return () => clearTimeout(timer);
+    // }, []);
+
     return (
-        <Router>
-                <Navbar />
-                <Routes>
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/attendance" element={<Attendance />} />
-                </Routes>
-        </Router>
+        <>
+            {/* {isLoading ? (
+                <LoadingScreen />
+            ) : ( */}
+                <Router>
+                    <Navbar />
+                    <Routes>
+                        <Route path="/" element={<Register />} />
+                        <Route path="/attendance" element={<Attendance />} />
+                        <Route path="/analytics" element={<Analytics />} />
+                        <Route path="/impexp" element={<Impexp />} />
+                    </Routes>
+                </Router>
+            {/* )} */}
+        </>
     );
 }
 
