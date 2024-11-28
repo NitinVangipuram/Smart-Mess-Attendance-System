@@ -228,7 +228,8 @@ const AnalyticsPage = () => {
   };
   
   const renderAttendanceChart = () => {
-    const labels = Object.keys(attendanceSummary);
+    // const labels = Object.keys(attendanceSummary);
+    const labels = Object.keys(attendanceSummary).sort((a, b) => new Date(a) - new Date(b));
     const data = {
       labels,
       datasets: [
