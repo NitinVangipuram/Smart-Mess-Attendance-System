@@ -7,7 +7,9 @@ import { CheckCircle, Cancel } from '@mui/icons-material';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 import axios from 'axios';
-const apiEndpoint = process.env.API_ENDPOINT;
+
+const apiEndpoint = process.env.REACT_APP_API_ENDPOINT;
+console.log(apiEndpoint);
 const AnalyticsPage = () => {
   const [action, setAction] = useState('');
   const [messtype, setMesstype] = useState('');
@@ -31,6 +33,7 @@ const AnalyticsPage = () => {
     setError(null);
     setStudentsData([]);
     try {
+      console.log(apiEndpoint);
       const response = await axios.get(`${apiEndpoint}/api/students/${messtype}`);
       setStudentsData(response.data);
       setLoading(false);
