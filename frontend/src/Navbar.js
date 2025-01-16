@@ -13,7 +13,7 @@ const Navbar = () => {
         <nav className="navbar">
             <div className="navbar-container">
                 <Link to="/" className="navbar-logo">
-                    <img src={logo} alt="icon" />
+                    <img src="https://www.iitdh.ac.in/sites/default/files/2024-01/logo_black_final.png" alt="icon" />
                 </Link>
                 <button className="menu-icon" onClick={toggleMobileMenu}>
                     {/* Hamburger Icon */}
