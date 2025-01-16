@@ -24,7 +24,7 @@ function App() {
                 <Router basename="/attendance">
                     <Navbar />
                     <Routes>
-                        <Route path="/attendance" element={<Register />} />
+                        <Route path="/" element={<Register />} />
                         <Route path="/attendance" element={<Attendance />} />
                         <Route path="/analytics" element={<Analytics />} />
                         <Route path="/impexp" element={<Impexp />} />
