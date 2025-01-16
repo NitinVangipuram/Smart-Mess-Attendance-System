@@ -21,10 +21,10 @@ function App() {
             {/* {isLoading ? (
                 <LoadingScreen />
             ) : ( */}
-                <Router>
+                <Router basename="/attendance">
                     <Navbar />
                     <Routes>
-                        <Route path="/" element={<Register />} />
+                        <Route path="/attendance" element={<Register />} />
                         <Route path="/attendance" element={<Attendance />} />
                         <Route path="/analytics" element={<Analytics />} />
                         <Route path="/impexp" element={<Impexp />} />
