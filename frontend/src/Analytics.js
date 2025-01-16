@@ -7,7 +7,7 @@ import { CheckCircle, Cancel } from '@mui/icons-material';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 import axios from 'axios';
-
+const apiEndpoint = process.env.API_ENDPOINT;
 const AnalyticsPage = () => {
   const [action, setAction] = useState('');
   const [messtype, setMesstype] = useState('');
@@ -31,7 +31,7 @@ const AnalyticsPage = () => {
     setError(null);
     setStudentsData([]);
     try {
-      const response = await axios.get(`http://localhost:8000/api/students/${messtype}`);
+      const response = await axios.get(`${apiEndpoint}/api/students/${messtype}`);
       setStudentsData(response.data);
       setLoading(false);
     } catch (err) {
@@ -46,7 +46,7 @@ const AnalyticsPage = () => {
     setStudentsData([]);
     setAttendanceSummary({});
     try {
-      const response = await axios.get(`http://localhost:8000/api/analytics/${date}/${mealType}/${messtype}`);
+      const response = await axios.get(`${apiEndpoint}/api/analytics/${date}/${mealType}/${messtype}`);
       setAnalyticsData(response.data);
       setStudentsData(response.data.students); // Update studentsData with students in analytics
       setLoading(false);
@@ -61,7 +61,7 @@ const AnalyticsPage = () => {
     setError(null);
     setAttendanceSummary({});
     try {
-      const response = await axios.get(`http://localhost:8000/api/attendance/${messtype}`);
+      const response = await axios.get(`${apiEndpoint}/api/attendance/${messtype}`);
       setAttendanceSummary(response.data);
       setLoading(false);
     } catch (err) {
@@ -75,7 +75,7 @@ const AnalyticsPage = () => {
     setError(null);
     setStudentDetails(null);
     try {
-      const response = await axios.get(`http://localhost:8000/api/student/${rollNo}`);
+      const response = await axios.get(`${apiEndpoint}/api/student/${rollNo}`);
       setStudentDetails(response.data);
       setLoading(false);
     } catch (err) {

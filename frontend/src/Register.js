@@ -3,7 +3,7 @@ import { TextField, Button, Typography, Box, Container,ButtonGroup } from '@mui/
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
-const apiEndpoint = process.env.REACT_APP_API_ENDPOINT;
+const apiEndpoint = process.env.API_ENDPOINT;
 const Register = () => {
     const [rollNo, setRollNo] = useState('');
     const [messtype, setMesstype] = useState('floor1');
