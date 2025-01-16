@@ -3,7 +3,7 @@ import { TextField, Button, Typography, Box, Container, Alert ,ButtonGroup} from
 import axios from 'axios';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2';
-const apiEndpoint = process.env.API_ENDPOINT;
+const apiEndpoint = process.env.REACT_APP_API_ENDPOINT;
 
 const Attendance = () => {
     const [rollNo, setRollNo] = useState('');

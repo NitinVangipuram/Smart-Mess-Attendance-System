@@ -22,8 +22,8 @@ const Navbar = () => {
                     <span className="menu-icon-bar"></span>
                 </button>
                 <div className={`navbar-links ${isMobileMenuOpen ? "navbar-links-active" : ""}`} style={{alignItems:"center" , zIndex:"2"}}>
-                    <Link to="/" className="navbar-item" onClick={toggleMobileMenu}>Register</Link>
-                    <Link to="/attendance" className="navbar-item" onClick={toggleMobileMenu}>Mark Student</Link>
+                    <Link to="/register" className="navbar-item" onClick={toggleMobileMenu}>Register</Link>
+                    <Link to="/login" className="navbar-item" onClick={toggleMobileMenu}>Mark Student</Link>
                     <Link to="/analytics" className="navbar-item" onClick={toggleMobileMenu}>Analytics</Link>
                     <Link to="/impexp" className="navbar-item" onClick={toggleMobileMenu}>Import/Export</Link>
                     
