@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Typography, Box, Container, Alert, CircularProgress } from '@mui/material';
 import axios from 'axios';
-
+const apiEndpoint = process.env.REACT_APP_API_ENDPOINT;
 const Impexp = () => {
   const [isLoading, setIsLoading] = useState(false); // Loading state for import process
   const [error, setError] = useState(null); // Error state
@@ -23,7 +23,7 @@ const Impexp = () => {
     setSuccess(null); // Reset success state
 
     try {
-      const response = await axios.post('http://localhost:8000/add-students', formData, {
+      const response = await axios.post(`${apiEndpoint}/add-students`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Set the content type for file upload
         },
@@ -40,7 +40,7 @@ const Impexp = () => {
   };
 
   const handleExport = () => {
-    window.location.href = 'http://localhost:8000/download-students'; // Redirect to download endpoint
+    window.location.href = `${apiEndpoint}/download-students`; // Redirect to download endpoint
   };
 
   return (

@@ -3,7 +3,7 @@ import { TextField, Button, Typography, Box, Container,ButtonGroup } from '@mui/
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import dayjs from 'dayjs';
-
+const apiEndpoint = process.env.REACT_APP_API_ENDPOINT;
 const Register = () => {
     const [rollNo, setRollNo] = useState('');
     const [messtype, setMesstype] = useState('floor1');
@@ -32,7 +32,7 @@ const Register = () => {
         setIsSubmitting(true); // Set submitting state to true
 
         try {
-            await axios.post('http://localhost:8000/register', { rollNo, messtype });
+            await axios.post(`${apiEndpoint}/register`, { rollNo, messtype });
             Swal.fire('Success', 'Student registered successfully', 'success');
             setRollNo(''); // Clear roll number after successful registration
             rollNoRef.current.focus(); // Re-focus on Roll No input after registration

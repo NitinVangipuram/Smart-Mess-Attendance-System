@@ -3,6 +3,7 @@ import { TextField, Button, Typography, Box, Container, Alert ,ButtonGroup} from
 import axios from 'axios';
 import dayjs from 'dayjs';
 import Swal from 'sweetalert2';
+const apiEndpoint = process.env.API_ENDPOINT;
 
 const Attendance = () => {
     const [rollNo, setRollNo] = useState('');
@@ -32,7 +33,7 @@ const Attendance = () => {
         if (currentHour >= 7 && currentHour < 10) return 'breakfast';
         if (currentHour >= 12 && currentHour < 14) return 'lunch';
         if (currentHour >= 14 && currentHour < 18) return 'snacks';
-        if (currentHour >= 19 && currentHour < 24) return 'dinner';
+        if (currentHour >= 18 && currentHour < 24) return 'dinner';
         return ''; // No meal type currently available
     };
 
@@ -49,7 +50,7 @@ const Attendance = () => {
         setIsSubmitting(true); // Set submitting state to true
 
         try {
-            const { data: student } = await axios.get(`http://localhost:8000/student/${rollNo}`);
+            const { data: student } = await axios.get(`${apiEndpoint}/student/${rollNo}`);
 
             if (student.messtype !== messtype) {
                 Swal.fire({
@@ -62,7 +63,7 @@ const Attendance = () => {
                 return;
             }
 
-            const response = await axios.post(`http://localhost:8000/attendance/${messtype}`, {
+            const response = await axios.post(`${apiEndpoint}/attendance/${messtype}`, {
                 rollNo,
                 mealType: currentMealType,
                 date
