@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import logo from "./img/logo_black_final.png";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 
-const Navbar = () => {
+const Navbar = ({setToken}) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const navigate = useNavigate();
 
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        setToken(null);
+        navigate('/login');
+    };
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
@@ -26,7 +32,7 @@ const Navbar = () => {
                     <Link to="/login" className="navbar-item" onClick={toggleMobileMenu}>Mark Student</Link>
                     <Link to="/analytics" className="navbar-item" onClick={toggleMobileMenu}>Analytics</Link>
                     <Link to="/impexp" className="navbar-item" onClick={toggleMobileMenu}>Import/Export</Link>
-                    
+                    <span className="navbar-item" onClick={handleLogout} style={{cursor:"pointer"}}>Logout</span>
                 </div>
             </div>
         </nav>
