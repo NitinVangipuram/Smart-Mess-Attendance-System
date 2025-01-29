@@ -6,6 +6,8 @@ const multer = require('multer');
 const xlsx = require('xlsx');
 const fs = require('fs');
 const path = require('path');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(bodyParser.json());
@@ -33,6 +35,63 @@ const studentSchema = new mongoose.Schema({
 
 const Student = mongoose.model('Student', studentSchema);
 
+const JWT_SECRET = 'mysecretkey';
+
+// User Schema and Model
+const userSchema = new mongoose.Schema({
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
+});
+
+const User = mongoose.model('User', userSchema);
+
+// Seed the admin user if not present
+async function seedAdminUser() {
+    const existingUser = await User.findOne({ username: 'messiitdh' });
+    if (!existingUser) {
+        const hashedPassword = await bcrypt.hash('messiitdh', 10);
+        const adminUser = new User({ username: 'messiitdh', password: hashedPassword });
+        await adminUser.save();
+        console.log('Admin user created');
+    }
+}
+seedAdminUser();
+
+// Middleware to verify JWT
+const authenticateJWT = (req, res, next) => {
+    const token = req.header('Authorization');
+    if (!token) return res.status(401).json({ error: 'Access denied' });
+
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) return res.status(403).json({ error: 'Invalid token' });
+        req.user = user;
+        next();
+    });
+};
+
+// Authentication API
+app.post('/authenticate', async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const user = await User.findOne({ username });
+        if (!user) return res.status(401).json({ error: 'Invalid username or password' });
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(401).json({ error: 'Invalid username or password' });
+
+        const token = jwt.sign({ username: user.username }, JWT_SECRET, { expiresIn: '1h' });
+
+        res.json({ token });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Protected API example (can be applied to other routes)
+app.get('/protected', authenticateJWT, (req, res) => {
+    res.json({ message: 'Access granted to protected route' });
+});
 
 // Register a student
 app.post('/register', async (req, res) => {

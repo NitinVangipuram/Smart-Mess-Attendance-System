@@ -1,37 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './Navbar';
 import Register from './Register';
 import Attendance from './Attendance';
 import Analytics from './Analytics';
 import Impexp from './Impexp';
-// import LoadingScreen from './LoadingScreen';
+import Login from './Login';
 import './App.css';
 
 function App() {
-    // const [isLoading, setIsLoading] = useState(true);
+    const [token, setToken] = useState(localStorage.getItem('token'));
 
-    // useEffect(() => {
-    //     const timer = setTimeout(() => setIsLoading(false), 3500); // Adjust time as needed for loading screen
-    //     return () => clearTimeout(timer);
-    // }, []);
+    useEffect(() => {
+        const storedToken = localStorage.getItem('token');
+        if (storedToken) {
+            setToken(storedToken);
+        }
+    }, []);
 
     return (
-        <>
-            {/* {isLoading ? (
-                <LoadingScreen />
-            ) : ( */}
-                <Router basename="/attendance">
-                    <Navbar />
-                    <Routes>
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/login" element={<Attendance />} />
-                        <Route path="/analytics" element={<Analytics />} />
-                        <Route path="/impexp" element={<Impexp />} />
-                    </Routes>
-                </Router>
-            {/* )} */}
-        </>
+        <Router basename="/attendance">
+        {token && <Navbar setToken={setToken} />}
+        <Routes>
+            <Route path="/admin" element={<Login setToken={setToken} />} />
+            {token ? (
+                <>
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/login" element={<Attendance />} />
+                    <Route path="/analytics" element={<Analytics />} />
+                    <Route path="/impexp" element={<Impexp />} />
+                    <Route path="*" element={<Navigate to="/register" />} />
+                </>
+            ) : (
+                <Route path="*" element={<Navigate to="/admin" />} />
+            )}
+        </Routes>
+    </Router>
     );
 }
 

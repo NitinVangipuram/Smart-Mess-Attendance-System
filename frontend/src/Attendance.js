@@ -30,10 +30,10 @@ const Attendance = () => {
 
     const getCurrentMealType = () => {
         const currentHour = dayjs().hour();
-        if (currentHour >= 7 && currentHour < 10) return 'breakfast';
-        if (currentHour >= 12 && currentHour < 14) return 'lunch';
-        if (currentHour >= 14 && currentHour < 18) return 'snacks';
-        if (currentHour >= 18 && currentHour < 24) return 'dinner';
+        if (currentHour >= 7 && currentHour < 11) return 'breakfast';
+        if (currentHour >= 12 && currentHour < 15) return 'lunch';
+        if (currentHour >= 16 && currentHour < 18) return 'snacks';
+        if (currentHour >= 19 && currentHour < 24) return 'dinner';
         return ''; // No meal type currently available
     };
 
