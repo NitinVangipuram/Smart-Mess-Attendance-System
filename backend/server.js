@@ -73,19 +73,20 @@ const authenticateJWT = (req, res, next) => {
 app.post('/authenticate', async (req, res) => {
     const { username, password } = req.body;
 
-    try {
-        const user = await User.findOne({ username });
-        if (!user) return res.status(401).json({ error: 'Invalid username or password' });
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(401).json({ error: 'Invalid username or password' });
-
-        const token = jwt.sign({ username: user.username }, JWT_SECRET, { expiresIn: '1h' });
-
-        res.json({ token });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    // Check for vendor credentials
+    if (username === 'messiitdh' && password === 'messiitdh') {
+        const token = jwt.sign({ username, role: 'vendor' }, 'your-secret-key', { expiresIn: '24h' });
+        return res.json({ token, role: 'vendor' });
     }
+
+    // Check for admin credentials
+    if (username === 'Swiitdh' && password === 'Swiitdh') {
+        const token = jwt.sign({ username, role: 'admin' }, 'your-secret-key', { expiresIn: '24h' });
+        return res.json({ token, role: 'admin' });
+    }
+
+    // If neither matches
+    res.status(401).json({ error: 'Invalid credentials' });
 });
 
 // Protected API example (can be applied to other routes)

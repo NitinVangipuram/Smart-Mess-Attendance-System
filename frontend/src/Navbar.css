@@ -24,6 +24,7 @@ body{
 .navbar-links {
     display: flex;
     gap: 20px;
+    align-items: center;
 }
 
 .navbar-item {
@@ -69,6 +70,7 @@ body{
         width: 100%;
         padding: 20px;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding-bottom: 15px;
     }
 
     .navbar-links.navbar-links-active {
@@ -77,5 +79,58 @@ body{
 
     .menu-icon {
         display: flex;
+    }
+
+    .MuiMenu-paper {
+        margin-top: 5px;
+    }
+}
+
+/* Add these new styles */
+.MuiIconButton-root {
+    color: #333 !important;
+}
+
+.MuiIconButton-root:hover {
+    color: #007bff !important;
+}
+
+.profile-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    background-color: #f5f5f5;
+    border-radius: 20px;
+}
+
+.profile-icon {
+    color: #333;
+    font-size: 24px;
+}
+
+.role-text {
+    color: #333;
+    text-transform: capitalize;
+    font-weight: 500;
+}
+
+.logout-button {
+    color: #dc3545;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.logout-button:hover {
+    color: #c82333;
+}
+
+@media (max-width: 768px) {
+    .profile-section {
+        flex-direction: column;
+        gap: 8px;
+        margin: 10px 0;
+        width: 100%;
+        border-radius: 10px;
     }
 }

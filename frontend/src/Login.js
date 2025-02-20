@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Card, CardContent, Typography, Alert, Box } from '@mui/material';
 const apiEndpoint = process.env.REACT_APP_API_ENDPOINT;
 
-function Login({ setToken }) {
+function Login({ setToken, setRole }) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -23,7 +23,9 @@ function Login({ setToken }) {
             const data = await response.json();
             if (response.ok) {
                 localStorage.setItem('token', data.token);
+                localStorage.setItem('role', data.role);
                 setToken(data.token);
+                setRole(data.role);
                 navigate('/register');
             } else {
                 setError(data.error);
