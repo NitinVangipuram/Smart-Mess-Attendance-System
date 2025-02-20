@@ -9,6 +9,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
+
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
@@ -45,17 +46,7 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-// Seed the admin user if not present
-async function seedAdminUser() {
-    const existingUser = await User.findOne({ username: 'messiitdh' });
-    if (!existingUser) {
-        const hashedPassword = await bcrypt.hash('messiitdh', 10);
-        const adminUser = new User({ username: 'messiitdh', password: hashedPassword });
-        await adminUser.save();
-        console.log('Admin user created');
-    }
-}
-seedAdminUser();
+
 
 // Middleware to verify JWT
 const authenticateJWT = (req, res, next) => {
@@ -73,20 +64,45 @@ const authenticateJWT = (req, res, next) => {
 app.post('/authenticate', async (req, res) => {
     const { username, password } = req.body;
 
-    // Check for vendor credentials
-    if (username === 'messiitdh' && password === 'messiitdh') {
-        const token = jwt.sign({ username, role: 'vendor' }, 'your-secret-key', { expiresIn: '24h' });
-        return res.json({ token, role: 'vendor' });
-    }
+    try {
+        // First find the user
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid username or password' });
+        }
 
-    // Check for admin credentials
-    if (username === 'Swiitdh' && password === 'Swiitdh') {
-        const token = jwt.sign({ username, role: 'admin' }, 'your-secret-key', { expiresIn: '24h' });
-        return res.json({ token, role: 'admin' });
-    }
+        // Verify password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ error: 'Invalid username or password' });
+        }
 
-    // If neither matches
-    res.status(401).json({ error: 'Invalid credentials' });
+        // If password matches, then check username for role assignment
+        if (username === 'messiitdh') {
+            const token = jwt.sign(
+                { username, role: 'vendor' },
+                'your-secret-key',
+                { expiresIn: '24h' }
+            );
+            return res.json({ token, role: 'vendor' });
+        }
+
+        if (username === 'Swiitdh') {
+            const token = jwt.sign(
+                { username, role: 'admin' },
+                'your-secret-key',
+                { expiresIn: '24h' }
+            );
+            return res.json({ token, role: 'admin' });
+        }
+
+        // If username doesn't match specific roles
+        return res.status(401).json({ error: 'Unauthorized role' });
+
+    } catch (error) {
+        console.error('Authentication error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 // Protected API example (can be applied to other routes)
