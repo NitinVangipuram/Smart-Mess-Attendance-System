@@ -30,10 +30,10 @@ const Attendance = () => {
 
     const getCurrentMealType = () => {
         const currentHour = dayjs().hour();
-        if (currentHour >= 7 && currentHour < 11) return 'breakfast';
-        if (currentHour >= 12 && currentHour < 15) return 'lunch';
+        if (currentHour >= 7 && currentHour < 12) return 'breakfast';
+        if (currentHour >= 12 && currentHour < 16) return 'lunch';
         if (currentHour >= 16 && currentHour < 18) return 'snacks';
-        if (currentHour >= 19 && currentHour < 24) return 'dinner';
+        if (currentHour >= 18 && currentHour < 24) return 'dinner';
         return ''; // No meal type currently available
     };
 
@@ -57,6 +57,8 @@ const Attendance = () => {
                     title: 'Warning',
                     text: `Messtype does not match with the registered student. Expected: ${messtype}, Found: ${student.messtype}`,
                     icon: 'warning',
+                    timer: 2000,  // Will automatically close after 3 seconds
+                    showConfirmButton: true,  // Removes the "OK" button
                     color: '#000', // black text color for better contrast
                 });
                 setRollNo('');
@@ -70,7 +72,13 @@ const Attendance = () => {
             });
 
             if (response.status === 200) {
-                Swal.fire('Success', `Attendance for ${currentMealType} marked successfully`, 'success');
+                Swal.fire({
+                    title: 'Success',
+                    text: `Attendance for ${currentMealType} marked successfully`,
+                    icon: 'success',
+                    timer: 2000,  // Will automatically close after 3 seconds
+                    showConfirmButton: true  // Removes the "OK" button
+                });
                 setRollNo(''); // Clear roll number after marking attendance
                 rollNoRef.current.focus(); // Re-focus on Roll No input
             }
