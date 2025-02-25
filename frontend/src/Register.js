@@ -33,11 +33,24 @@ const Register = () => {
 
         try {
             await axios.post(`${apiEndpoint}/register`, { rollNo, messtype });
-            Swal.fire('Success', 'Student registered successfully', 'success');
+            Swal.fire({
+                title: 'Success',
+                text: 'Student registered successfully',
+                icon: 'success',
+                timer: 2000,  // Will automatically close after 3 seconds
+                showConfirmButton: true  // Removes the "OK" button
+            });
             setRollNo(''); // Clear roll number after successful registration
             rollNoRef.current.focus(); // Re-focus on Roll No input after registration
         } catch (error) {
-            Swal.fire('Error', 'Error registering student', 'error');
+            Swal.fire({
+                title: 'Error',
+                text: error.response.data || 'Error registering student',
+                icon: 'error', 
+                timer: 2000,  // Will automatically close after 3 seconds
+                showConfirmButton: true
+            });
+            setRollNo('');
         } finally {
             setIsSubmitting(false); // Reset submitting state
         }

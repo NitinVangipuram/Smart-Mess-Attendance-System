@@ -84,11 +84,22 @@ const Attendance = () => {
             }
         } catch (error) {
             if (error.response) {
-                Swal.fire('Error', error.response.data || 'Error marking attendance', 'error');
+                Swal.fire({
+                    title: 'Error',
+                    text: error.response.data || 'Error marking attendance',
+                    icon: 'error',
+                    timer: 2000,  // Will automatically close after 3 seconds
+                    showConfirmButton: true
+                });
                 setRollNo('');
             } else {
-                Swal.fire('Error', 'Network error or unexpected issue', 'error');
-                
+                Swal.fire({
+                    title: 'Error', 
+                    text: 'Network error or unexpected issue',
+                    icon: 'error',
+                    timer: 2000,  // Will automatically close after 3 seconds
+                    showConfirmButton: true
+                });
             }
         } finally {
             setIsSubmitting(false); // Reset submitting state
